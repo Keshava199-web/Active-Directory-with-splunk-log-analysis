@@ -64,14 +64,74 @@ Authentication logs from both Windows and Linux environments are centralized in 
 Events included in the dataset:
 
 * *Successful SSH Login*
-
 * *Failed SSH Login*
-
 * *Multiple Failed Authentication Attempts*
-
 * *Connection Without Authentication*
-
 * *Analyzing these logs helps detect brute-force attacks, scanning activity, and unusual login patterns.*
+
+### Detection Queries
+
+**Detect Failed SSH Login Attempts**
+```
+index=ssh_logs event_type="Failed SSH Login"
+| stats count by id.orig_h
+| sort -count
+```
+*-> This query identifies source IP addresses responsible for repeated failed login attempts.*
+
+**Detect SSH Brute Force Attempts**
+```
+index=ssh_logs event_type="Multiple Failed Authentication Attempts"
+| stats count by id.orig_h id.resp_h
+```
+*-> This query highlights repeated authentication attempts targeting specific systems.*
+
+**Monitor Successful SSH Logins**
+```
+index=ssh_logs event_type="Successful SSH Login"
+| stats count by id.orig_h id.resp_h
+```
+
+*-> Monitoring successful logins helps identify unusual authentication behavior.*
+
+**Detect SSH Connections Without Authentication**
+```
+index=ssh_logs event_type="Connection Without Authentication"
+| timechart count by id.orig_h
+```
+*-> These events may indicate SSH probing or reconnaissance activity.*
+
+### MITRE ATT&CK Mapping
+
+The attack patterns detected in this project align with techniques from the MITRE ATT&CK framework.
+
+| Technique | Description |
+|----------|-------------|
+| T1110 | Brute Force |
+| T1078 | Valid Accounts |
+| T1046 | Network Service Discovery |
+
+### Skills Demonstrated
+
+This project demonstrates several practical cybersecurity and SOC monitoring skills:
+
+* *Splunk SIEM log ingestion*
+* *Security log analysis using SPL queries*
+* *Authentication monitoring*
+* *Brute-force attack detection*
+* *Security dashboard creation*
+* *Alert configuration*
+
+These skills are commonly required in SOC analyst and threat detection roles.
+---
+### Conclusion
+
+This project demonstrates how **Splunk SIEM** can be used to monitor authentication logs from both **Active Directory (Windows) and Linux SSH environments.**
+
+By centralizing logs and applying detection queries, suspicious authentication behavior such as **brute-force attacks, reconnaissance attempts, and unauthorized access attempts** can be identified.
+
+This lab simulates a simplified **SOC monitoring environment** and highlights the role of **SIEM platforms in modern cybersecurity operations.**
+
 
 
 
